@@ -21,7 +21,7 @@ class AppView(APIView):
     def get(self,request,*args,**kwargs):
 
         user = self.request.user
-        if user.is_staff:
+        if user.is_superuser:
             apps = Tasks.objects.all()
         else :
             apps = Tasks.objects.filter(user = request.user.id)
@@ -73,7 +73,7 @@ class AppDetailView (APIView):
 #View a certain task create by the user
     def get (self,request,app_id,*args,**kwargs):
         try :
-            if request.user.is_staff:                           #Admin can view any task
+            if request.user.is_superuser:                           #Admin can view any task
                 app_instance = Tasks.objects.get(id=app_id)
             else:
                 app_instance = self.get_object(app_id, request.user.id)

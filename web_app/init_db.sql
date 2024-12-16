@@ -17,6 +17,15 @@ VALUES
     (4, 'Finish the Project', 'Do everything', '2024-12-15 20:37:17.940634+00', FALSE, '2024-12-15 20:37:17.940653+00', 1),
     (5, 'Touch grass', 'You know what to do.', '2024-12-15 20:15:03.86957+00', FALSE, '2024-12-15 20:15:03.869768+00', 1)
 
+    (6, 'Make the report', 'Do everything', '2024-12-15 20:37:17.940634+00', FALSE, '2024-12-15 20:37:17.940653+00', 2),
+    (7, 'Eat shrimps', 'Yummy.', '2024-12-15 20:15:03.86957+00', FALSE, '2024-12-15 20:15:03.869768+00', 2),
+
+    (8, 'Pet the cat', 'Yes', '2024-12-15 20:37:17.940634+00', FALSE, '2024-12-15 20:37:17.940653+00', 3),
+    (9, 'Ride Bike', 'Vroom Vroom.', '2024-12-15 20:15:03.86957+00', FALSE, '2024-12-15 20:15:03.869768+00', 3),
+
+    (10, 'Buy Flowers', 'All the Colors !!', '2024-12-15 20:37:17.940634+00', FALSE, '2024-12-15 20:37:17.940653+00', 4),
+    (11, 'Sleep', 'You need it.', '2024-12-15 20:15:03.86957+00', FALSE, '2024-12-15 20:15:03.869768+00', 4)
+
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval('rest_api_tasks_id_seq', (SELECT MAX(id) FROM rest_api_tasks));
