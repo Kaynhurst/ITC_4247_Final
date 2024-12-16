@@ -9,10 +9,17 @@ services:
       - "8000:8000"
     environment:
       - DEBUG=True
-  
+    depends_on:
+      - postgres
+    command: >
+        bash -c "
+        python manage.py migrate && 
+        python manage.py populate_data &&
+        python manage.py runserver 0.0.0.0:8000
+        "
   postgres:
     container_name: container-pg
-    image: postgres
+    image: postgres:latest
     hostname: postgres
     ports:
       - "5432:5432"
@@ -21,6 +28,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: tasks_db
     volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
       - postgres-data:/var/lib/postgresql/data
     restart: unless-stopped
 
