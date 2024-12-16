@@ -1,4 +1,5 @@
 from django.utils.timezone import localtime
+from psycopg2 import IntegrityError
 from rest_framework import serializers
 from .models import Tasks
 from django.contrib.auth import get_user_model
@@ -13,13 +14,15 @@ class AppSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tasks
         fields = ['id','task','description','completed','formatted_time','formatted_updated','user']
-        
-        extra_kwags = {
-            'task' : {'required' : False},
-            'completed' : {'required' : False},
-            'description' : {'required' : False}
 
-        }
+        
+    def create(self, validated_data):
+        try:
+            return super().create(validated_data)
+        except IntegrityError as e:
+            if "duplicate key value violates unique constraint" in str(e):
+                raise serializers.ValidationError({"id": "A task with this ID already exists."})
+            raise e
     
     def get_formatted_time(self, obj):
         return localtime(obj.timestamp).strftime('%B %d, %Y at %I:%M %p')

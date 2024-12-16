@@ -32,8 +32,9 @@ class AppView(APIView):
                         status = status.HTTP_200_OK)
     
     def post(self,request,*args,**kwargs):
-
+        
         data = {
+            'id' : Tasks.objects.last().id + 1 ,
             'task' : request.data.get('task'),
             'completed':request.data.get('completed'),
             'description' : request.data.get('description'),
@@ -41,11 +42,16 @@ class AppView(APIView):
         }
 
         serializer = AppSerializer(data=data)
-        if serializer.is_valid() :
-            serializer.save()
-            return Response(serializer.data,
-                            status = status.HTTP_201_CREATED)
-        
+
+        if serializer.is_valid():
+            try:
+                
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except IntegrityError as e:
+
+                return Response({"error": "Integrity Error: " + str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            
 
         return Response(serializer.errors,
                         status = status.HTTP_400_BAD_REQUEST)

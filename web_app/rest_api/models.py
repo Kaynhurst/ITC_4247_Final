@@ -13,7 +13,7 @@ class Tasks(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank = True, null= True)
 
     def __str__(self):
-        print (f"{self.task} (Created: {localtime(self.timestamp).strftime('%Y-%m-%d %I:%M %p')})")
+        return (f"{self.task} (Created: {localtime(self.timestamp).strftime('%Y-%m-%d %I:%M %p')})")
 
     @property
     def formatted_time(self):

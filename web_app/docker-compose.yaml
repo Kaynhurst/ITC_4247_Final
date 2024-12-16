@@ -12,11 +12,12 @@ services:
     depends_on:
       - postgres
     command: >
-        bash -c "
-        python manage.py migrate && 
-        python manage.py populate_data &&
-        python manage.py runserver 0.0.0.0:8000
-        "
+          bash -c "
+          python manage.py makemigrations &&
+          python manage.py migrate &&
+          python manage.py populate_data &&
+          python manage.py runserver 0.0.0.0:8000
+          "
   postgres:
     container_name: container-pg
     image: postgres:latest
