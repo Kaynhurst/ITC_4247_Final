@@ -1,12 +1,14 @@
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.contrib.auth.models import User
 from rest_api.models import Tasks
+from django.utils.timezone import datetime as timezone_datetime
+
 
 class Command(BaseCommand):
     help = 'Populates the auth_user and rest_api_tasks tables with sample data'
 
     def handle(self, *args, **options):
+        # List of user data
         users_data = [
             {
                 'username': 'admin',
@@ -46,51 +48,57 @@ class Command(BaseCommand):
             }
         ]
 
-        # Iterate over the user data and create or update users
+        # Create or update users
         for user_data in users_data:
-            user, created = User.objects.get_or_create(username=user_data['username'], defaults=user_data)
+            user, created = User.objects.get_or_create(
+                username=user_data['username'],
+                defaults={
+                    'first_name': user_data['first_name'],
+                    'last_name': user_data['last_name'],
+                    'email': user_data['email'],
+                    'is_superuser': user_data['is_superuser'],
+                    'is_staff': user_data['is_staff']
+                }
+            )
             if created:
                 user.set_password(user_data['password'])
                 user.save()
+                self.stdout.write(f"User '{user_data['username']}' created.")
+            else:
+                self.stdout.write(f"User '{user_data['username']}' already exists.")
 
-        # List of task data to insert for the Admin
+        # List of task data
         tasks_data = [
-        (1, 'Make soup', 'Gather the ingridients', '2024-12-15 20:13:20.566959+00', False, '2024-12-15 20:13:20.566978+00', 1),
-        (2, 'Get the dog', 'Animal shelter near the store.', '2024-12-15 20:13:33.205051+00', False, '2024-12-15 20:13:33.205082+00', 1),
-        (3, 'New Simple Task', 'Be productive', '2024-12-15 20:30:56.693376+00', True, '2024-12-15 20:30:56.6934+00', 1),
-        (4, 'Finish the Project', 'Do everything', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 1),
-        (5, 'Touch grass', 'You know what to do.', '2024-12-15 20:15:03.86957+00', False, '2024-12-15 20:15:03.869768+00', 1),
-
-        (6, 'Make the report', 'Do everything', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 2),
-        (7, 'Eat shrimps', 'Yummy.', '2024-12-15 20:15:03.86957+00', False, '2024-12-15 20:15:03.869768+00', 2),
-
-        (8, 'Pet the cat', 'Yes', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 3),
-        (9, 'Ride Bike', 'Vroom Vroom.', '2024-12-15 20:15:03.86957+00', False, '2024-12-15 20:15:03.869768+00', 3),
-
-        (10, 'Buy Flowers', 'All the Colors !!', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 4),
-        (11, 'Sleep', 'You need it.', '2024-12-15 20:15:03.86957+00', True, '2024-12-15 20:15:03.869768+00', 4)
+            ('Make soup', 'Gather the ingredients', '2024-12-15 20:13:20.566959+00', False, '2024-12-15 20:13:20.566978+00', 1),
+            ('Get the dog', 'Animal shelter near the store.', '2024-12-15 20:13:33.205051+00', False, '2024-12-15 20:13:33.205082+00', 1),
+            ('New Simple Task', 'Be productive', '2024-12-15 20:30:56.693376+00', True, '2024-12-15 20:30:56.6934+00', 1),
+            ('Finish the Project', 'Do everything', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 1),
+            ('Touch grass', 'You know what to do.', '2024-12-15 20:15:03.86957+00', False, '2024-12-15 20:15:03.869768+00', 1),
+            ('Make the report', 'Do everything', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 2),
+            ('Eat shrimps', 'Yummy.', '2024-12-15 20:15:03.86957+00', False, '2024-12-15 20:15:03.869768+00', 2),
+            ('Pet the cat', 'Yes', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 3),
+            ('Ride Bike', 'Vroom Vroom.', '2024-12-15 20:15:03.86957+00', False, '2024-12-15 20:15:03.869768+00', 3),
+            ('Buy Flowers', 'All the Colors !!', '2024-12-15 20:37:17.940634+00', False, '2024-12-15 20:37:17.940653+00', 4),
+            ('Sleep', 'You need it.', '2024-12-15 20:15:03.86957+00', True, '2024-12-15 20:15:03.869768+00', 4)
         ]
 
-        # Iterate through tasks data and create Task instances
+        # Create or update tasks
         for task_data in tasks_data:
-            # Check if the task already exists
-            
-            task, created = Tasks.objects.get_or_create(
-                id=task_data[0],
-                defaults={
-                    'task': task_data[1],
-                    'description': task_data[2],
-                    'timestamp': timezone.datetime.fromisoformat(task_data[3]), 
-                    'completed': task_data[4],
-                    'updated': timezone.datetime.fromisoformat(task_data[5]), 
-                    'user': User.objects.get(id=task_data[6])
-                }
-            )
-
-            # Check if task was created or already existed
-            if created:
-                self.stdout.write(self.style.SUCCESS(f'Task {task.id} created successfully'))
-            else:
-                self.stdout.write(self.style.SUCCESS(f'Task {task.id} already exists'))
-
-        self.stdout.write(self.style.SUCCESS('Successfully populated the tables'))
+            try:
+                user = User.objects.get(id=task_data[5])
+                task, created = Tasks.objects.get_or_create(
+                    task=task_data[0],
+                    defaults={
+                        'description': task_data[1],
+                        'timestamp': timezone_datetime.fromisoformat(task_data[2]),
+                        'completed': task_data[3],
+                        'updated': timezone_datetime.fromisoformat(task_data[4]),
+                        'user': user
+                    }
+                )
+                if created:
+                    self.stdout.write(f"Task '{task_data[0]}' created.")
+                else:
+                    self.stdout.write(f"Task '{task_data[0]}' already exists.")
+            except User.DoesNotExist:
+                self.stdout.write(f"Error: User with ID {task_data[5]} does not exist.")

@@ -5,6 +5,7 @@ from django.utils.timezone import localtime
 # Create your models here.
 
 class Tasks(models.Model):
+    id = models.BigAutoField(primary_key=True)
     task = models.CharField(max_length=180)
     description = models.CharField(max_length= 400)
     timestamp = models.DateTimeField(auto_now_add= True, auto_now= False, blank = True)
