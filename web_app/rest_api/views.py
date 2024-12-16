@@ -146,3 +146,8 @@ class isAdmin(BasePermission):
             return True
         
         return data.owner == request.user
+    
+#HTML Views
+
+def index(request) : 
+    return render(request,'index/home.html')

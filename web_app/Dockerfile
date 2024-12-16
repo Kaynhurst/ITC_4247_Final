@@ -8,10 +8,18 @@ WORKDIR /app
 COPY . /app
 
 # Install dependencies
+
+RUN pip install psycopg2-binary
 RUN pip install -r requirements.txt
+
+
 
 # Expose the application port
 EXPOSE 8000
+EXPOSE 5432
 
 # Default command
+
+CMD python manage.py makemigrations
+CMD python manage.py migrate
 CMD python manage.py runserver 0.0.0.0:8000
