@@ -40,4 +40,5 @@ To add new or edit Tasks use the following format :
 Additional Notes : 
    - If an error relating to the rest_api_tasks_db occurs, try restarting the web_app-container after waiting for the container-pg to fully initialize.
    - If there are any issues regarding the Docker, remove the Task Manager Secure version from the folder (This is untested and possible unintentional functionality)
+   - Should you reach an error url, you can easily redirect to the intended web service by going to the http://localhost:8000/api/ link.
 
